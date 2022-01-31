@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="~/angular-chart.css" rel="stylesheet" />
+
+</head>
+<body>
+    @if (Session["Email"] != null)
+    {
+<div class="text-right">
+    <span>@Session["Email"].ToString()</span>
+    <span><a href="@Url.Action("Logout","NguoiDung")">Đăng Xuất</a></span>
+</div>}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3">
+                <ul>
+                    <li><a href="@Url.Action("Index","HoaDon")">Quan ly hoa don</a></li>
+                    <li><a href="@Url.Action("Index","LoaiTVs")">Quản lý nhóm người dùng </a></li>
+                    <li><a href="#">Quan ly khach hang</a></li>
+                    <li><a href="#">Quan ly nhan vien</a></li>
+                    <li><a href="#">Quan ly User</a></li>
+                </ul>
+
+            </div>
+            <div class="col-lg-9">
+                @RenderBody()
+
+            </div>
+
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="~/js-ui/jquery-ui.js"></script>
+    <script src="~/numeral.js"></script>
+    <script src="~/angular.js"></script>
+    <script src="~/Chart.js"></script>
+    <script src="~/angular-chart.js"></script>
+    <script src="~/staticChart.js"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

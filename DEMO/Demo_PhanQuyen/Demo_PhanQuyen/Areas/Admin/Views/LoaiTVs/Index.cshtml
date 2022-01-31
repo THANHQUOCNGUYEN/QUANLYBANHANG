@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Demo_PhanQuyen.Models.LoaiTV>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+@if (@ViewBag.ThanhCong != null)
+{
+    <span id="thanhcong" class="alert alert-success">
+        @ViewBag.ThanhCong
+    </span>
+
+}
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.TenLoai)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UuDai)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TenLoai)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UuDai)
+            </td>
+            <td>
+                <!--phan quyen-->
+                <a href="@Url.Action("PhanQuyen","LoaiTVs",new { id = item.MaLoaiTV})">PhanQuyen</a>
+            </td>
+        </tr>
+    }
+
+</table>
+<script>
+    setTimeout(function () {
+        $('#thanhcong').fadeOut('slow');
+    }, 2000);
+
+</script>

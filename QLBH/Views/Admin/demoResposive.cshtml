@@ -1,0 +1,491 @@
+﻿
+<!DOCTYPE html>
+@{ 
+    Layout = null;
+}
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>demoResposive</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Css/all.css" rel="stylesheet" />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <style>
+        .logo {
+            width: 350px;
+            height: 200px;
+            float: left;
+        }
+
+        header {
+            background-image: url('../../Css/bg.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .main-nav {
+            float: right;
+            list-style-type: none;
+            margin-top: 20px;
+            margin-right: 40px;
+        }
+
+            .main-nav li {
+                display: inline-block;
+                margin-right: 20px;
+            }
+
+        a {
+            color: white;
+            font-size: 110%;
+            font-weight: 700;
+            font-family: 'Lato',sans-serif;
+            transition: border-bottom 2s;
+            color: white;
+        }
+
+        .clearfix1::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        li a:hover {
+            color: white;
+        }
+
+        li a:active {
+            border-bottom: 2px solid #ccc;
+        }
+
+        h1 {
+            text-transform: uppercase;
+            font-size: 300%;
+            font-weight: 400;
+            letter-spacing: 10px;
+            word-spacing: 5px;
+            color: black;
+        }
+
+        h2 {
+            color: #ffd800;
+            font-size: 180%;
+            font-weight: 700;
+            text-align: center;
+            /* margin-left:50%;*/
+        }
+
+            h2::after {
+                content: "";
+                display: block;
+                width: 100px;
+                height: 3px;
+                background-color: #ff6a00;
+                margin: 0 auto;
+            }
+
+        .p-long {
+            text-align: center;
+            color: #FF66CC;
+            font-size: 22px;
+            margin-top: 40px;
+            margin-bottom: 40px;
+            width: 70%;
+        }
+
+        /*Phần quan trọng*/
+        .about_picture img {
+            width: 90%;
+            border-radius: 20px;
+            border: 4px solid #d8e6ef;
+            box-shadow: 0px 5px 15px 5px #3d7ced;
+            transition: all .7s;
+            /*x,y do mo - do phong rong - mau*/
+            /*filter:blur(2px)brightness(55%)*/
+        }
+
+        .picture_detail {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            color: #d8e6ef;
+            transform: translate(-65%,100%);
+            opacity: 0;
+            transition: all .7s;
+        }
+
+        .about_picture:hover .picture_detail,
+        .about_picture:active .picture_detail {
+            transform: translate(-65%,-50%);
+            opacity: 1;
+        }
+
+        .about_picture:hover img,
+        .about_picture:hover img {
+            filter: blur(2px)brightness(55%)
+        }
+
+        .product-section {
+            margin-top: 60px;
+        }
+
+            .product-section h2 {
+                margin-bottom: 60px;
+            }
+
+        .product-box {
+            background-color: #eeefff;
+            width: 90%;
+            height: 350px;
+            box-shadow: 3px 5px 10px #e0e0e0;
+        }
+
+        h3 {
+            padding-top: 30px;
+            padding-bottom: 10px;
+            text-align: center;
+            background-color: #0026ff;
+            color: white;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+
+        .product-gia {
+            color: #265077;
+            font-size: 250%;
+            text-align: center;
+        }
+
+            .product-gia span {
+                font-size: 80%;
+                font-weight: 200;
+            }
+
+        .product-box ul li {
+            margin-left: 20%;
+            list-style: none;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .product-box a {
+            margin-left: 40%;
+        }
+
+        /*sponsors section*/
+        .sponsors-section {
+            background-color: white;
+        }
+
+            .sponsors-section h2 {
+                margin-bottom: 50px;
+            }
+
+        .sponsors-showcase {
+            margin-left: 22%;
+        }
+
+            .sponsors-showcase li {
+                list-style: none;
+                display: inline-block;
+                width: 30%;
+                text-align: center;
+            }
+
+        .logo-sponsors {
+            width: 200px;
+            cursor: pointer;
+            transition: all .3s;
+        }
+
+            .logo-sponsors:hover {
+                transform: scale(1.2);
+            }
+
+        footer {
+            text-align: center;
+            background-color: #807171;
+            color: white;
+            padding: 20px;
+        }
+        /*CONTACT-SESSION*/
+
+        .contact-session {
+            background-image: url('../../Css/bg.png');
+        }
+
+        .information {
+            list-style: none;
+            color: white;
+            line-height: 200%;
+            margin-top: 70px;
+            word-spacing: 1px;
+            font-size: 95%;
+        }
+
+        .small-icon {
+            color: #252ee2;
+            font-size: 30px;
+        }
+
+            .small-icon:hover {
+                transform: scale(1.3);
+                cursor: pointer;
+            }
+
+        .social-icon {
+            display: inline-block;
+            font-size: 250%;
+            margin-left: 20px;
+            color: white;
+            transition: all .3s;
+        }
+
+            .social-icon i {
+                transition: all .3s;
+                cursor: pointer;
+            }
+
+                .social-icon i:hover {
+                    transform: scale(1.3);
+                    color: orange;
+                }
+
+        /*tạo form nhìn xuyên ảnh nền*/
+        form {
+            background-color: rgba(0,0,0,.3);
+            margin-right: 0;
+            width: 60%;
+            padding: 20px;
+        }
+
+        label {
+            font-size: 150%;
+            color: white;
+        }
+
+        input, textarea {
+            outline: none;
+            padding: 10px;
+            background-color: rgb(158 151 151 / 30%);
+            border: 1px solid rgba(187 176 176 / 30%);
+            margin-left: 30px;
+        }
+
+        textarea {
+            resize: none;
+        }
+
+        form .a:last-child {
+            text-align: center;
+        }
+
+        input[type=submit] {
+            font-weight: 700;
+            font-size: 100%;
+            border-radius: 5px;
+            width: 70%;
+        }
+
+        form .row {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="container">
+            <header>
+                <a href="#">
+                    <img src="~/Css/logo81.png" />
+                </a>
+                <ul class="main-nav">
+                    <li><a href="#">Gioi thieu</a></li>
+                    <li><a href="#">Lien he</a></li>
+                    <li><a href="#">Thong tin </a></li>
+                </ul>
+                <div class="clearfix"></div>
+                <div class="a">
+                    <h1 class="heading-main-text">
+                        Hãy đến với chúng tôi,<br>mang lại nhiều sản phẩm <br />mong đợi,ha haha
+                    </h1>
+                    <a href="#" class="btn btn-warning" style="border-radius:10px 10px;width:100px">Gọi ngay</a>
+                    <a href="#" class="btn btn-warning" style="border-radius:10px 10px;width:100px">John us</a>
+                </div>
+            </header>
+            <div>
+                <h2 class="animate__animated animate__tada">About Us</h2>
+                <p class="p-long">
+                    we are people that are studying English by ourselves,we belive
+                </p>
+            </div>
+            <div class="row a">
+                <div class="col-lg-3 col-md-4 col-sm-6 about_picture">
+                    <img src="~/Content/images/Acer/a_1.jpg" />
+                    <p class="picture_detail">Thanh Quoc</p>
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-6 about_picture">
+
+                    <img src="~/Content/images/Acer/a_2.jpg" />
+                    <p class="picture_detail">Thanh Tan</p>
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-6 about_picture">
+                    <img src="~/Content/images/Acer/a_3.jpg" />
+                    <p class="picture_detail">Van Hung</p>
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-6 about_picture">
+                    <img src="~/Content/images/Acer/a_4.jpg" />
+                    <p class="picture_detail">Thanh Phong</p>
+                </div>
+            </div>
+        </div>
+        <section class="product-section">
+            <h2>Products</h2>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="product-box">
+                        <h3>Pronunciation Class</h3>
+                        <p class="product-gia" product-gia>19$<span>/Moth</span></p>
+                        <ul>
+                            <li><i class="fas fa-check" style="color:red"></i>Native speaking</li>
+                            <li><i class="fas fa-check">Speaing naturlly</i></li>
+                        </ul>
+                        <a href="#" class="btn btn-warning">JOIN US</a>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="product-box">
+                        <h3>Pronunciation Class</h3>
+                        <p class="product-gia">19$<span>/Moth</span></p>
+                        <ul>
+                            <li><i class="fas fa-check">Native vioces</i></li>
+                            <li><i class="fas fa-check">Master</i></li>
+                        </ul>
+                        <a href="#" class="btn btn-warning">JOIN US</a>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="product-box">
+                        <h3>Pronunciation Class</h3>
+                        <p class="product-gia">19$<span>/Moth</span></p>
+                        <ul>
+                            <li><i class="fas fa-check">Native speech</i></li>
+                            <li><i class="fas fa-check">Hearing English chearly</i></li>
+                        </ul>
+                        <a href="#" class="btn btn-warning">JOIN US</a>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+        <section class="sponsors-section">
+            <h2 class="animate__animated animate__bounce">Sponsors</h2>
+            <div class="row">
+                <ul class="sponsors-showcase">
+                    <li>
+                        <figure>
+                            <img class="logo-sponsors" src="~/Content/img/logo.png" />
+                            <figcaption>
+                                USA
+                            </figcaption>
+                        </figure>
+                    </li>
+                    <li>
+                        <figure>
+                            <img class="logo-sponsors" src="~/Content/img/logo.png" />
+                            <figcaption>
+                                Barcelona
+                            </figcaption>
+                        </figure>
+                    </li>
+                    <li>
+                        <figure>
+                            <img class="logo-sponsors" src="~/Content/img/logo.png" />
+                            <figcaption>
+                                Real Marid
+                            </figcaption>
+                        </figure>
+                    </li>
+                </ul>
+            </div>
+            <div class="row">
+                <ul class="sponsors-showcase">
+                    <li>
+                        <figure>
+                            <img class="logo-sponsors" src="~/Content/img/logo.png" />
+                            <figcaption>
+                                USA
+                            </figcaption>
+                        </figure>
+                    </li>
+                    <li>
+                        <figure>
+                            <img class="logo-sponsors" src="~/Content/img/logo.png" />
+                            <figcaption>
+                                Barcelona
+                            </figcaption>
+                        </figure>
+                    </li>
+                    <li>
+                        <figure>
+                            <img class="logo-sponsors" src="~/Content/img/logo.png" />
+                            <figcaption>
+                                Real Marid
+                            </figcaption>
+                        </figure>
+                    </li>
+                </ul>
+            </div>
+        </section>
+        <section class="contact-session">
+            <div class="row">
+                <div class="col-lg-4">
+                    <ul class="information">
+                        <li><i class="fas fa-map-marker-alt small-icon"></i>Address:21 phuoc thang,tuy phuoc,binh dinh</li>
+                        <li><i class="fas fa-envelope small-icon"></i>Email:thanhquoc163@mail.com</li>
+                        <li><i class="fas fa-phone small-icon"></i>SDT:07999339221</li>
+                        <li class="social-icon"><i class="fab fa-twitter"></i></li>
+                        <li class="social-icon"><i class="fab fa-facebook"></i></li>
+                        <li class="social-icon"><i class="fas fa-camera"></i></li>
+                        <li class="social-icon"><i class="fab fa-google-plus-g "></i></li>
+                    </ul>
+                </div>
+                <div class="col-lg-8 ">
+                    <form>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Name</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input type="text" placeholder="YourName">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Name</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input type="text" placeholder="YourEmail">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <label>Message</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <textarea placeholder="YourMessenger"></textarea>
+                            </div>
+                        </div>
+                        <div class="a">
+                            <input type="submit" class="btn btn-danger" value="Send">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+        <footer>
+        </footer>
+    </div>
+</body>
+</html>

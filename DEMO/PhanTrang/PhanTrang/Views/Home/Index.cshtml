@@ -1,0 +1,88 @@
+﻿@model IEnumerable<PhanTrang.Models.SanPham>
+
+@{
+    ViewBag.Title = "Index";
+}
+<!--DANH SACH DANH MỤC-->
+@Html.Action("DanhMuc","Home")
+<h2 class="badge badge-primary">Danh sách sản phẩm</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.LoaiSP.TenLoaiSP)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TenSP)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DonViTinh)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DonGia)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HinhSP)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.LoaiSP.TenLoaiSP)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TenSP)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DonViTinh)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DonGia)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.HinhSP)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.MaSP }) |
+            @Html.ActionLink("Details", "Details", new { id=item.MaSP }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.MaSP })
+        </td>
+    </tr>
+}
+
+</table>
+<!--Phan trang-->
+<div class="container text-center">
+    <ul class="pagination">
+        @{
+            var pageCurrent = ViewBag.pageCurrent;
+            var pagenumber = ViewBag.number;
+            if (pageCurrent > 1)
+            {
+                <li class="page-item"><a class="page-link" href="@Url.Action("Index",new { page=pageCurrent-1,maloai = ViewBag.maloai })">Prev</a></li>
+
+            }
+            for (int i = 1; i <= pagenumber; i++)
+            {
+                if (i == pageCurrent)
+                {
+                    <li class="page-item active"><a class="page-link" href="@Url.Action("Index",new { page=i,maloai = ViewBag.maloai })">@i</a></li>
+                }
+                else
+                {
+                    <li class="page-item"><a class="page-link" href="@Url.Action("Index",new { page=i,maloai = ViewBag.maloai })">@i</a></li>
+                }
+            }
+            if (pageCurrent >= 1 && pageCurrent < pagenumber)
+            {
+                <li class="page-item"><a class="page-link" href="@Url.Action("Index",new { page=pageCurrent+1,maloai = ViewBag.maloai })">Next</a></li>
+
+            }
+        }
+    </ul>
+</div>

@@ -1,0 +1,89 @@
+﻿<!--Modal phan quyen luc nay la 1 gia tri-->
+@using PhanQuyen.Models;
+@model UserGroup
+@{
+    ViewBag.Title = "PhanQuyen";
+}
+<!--trong html ta hay dung enumerbale thay cho list-->
+<h1>Phân Quyền</h1>
+<h2 style="color:red;">Loại Thành Viên : @Model.</h2>
+@{
+    //lay danh sach quyen
+    IEnumerable<Quyen> lstQuyen = (IEnumerable<Quyen>)ViewBag.MaQuyen;
+    IEnumerable<LoaiTV_Quyen> lstLTVQuyen = (IEnumerable<LoaiTV_Quyen>)ViewBag.LoaiTVQuyen;
+}
+<!--Ghi vầy nó tự hiểu là method post của phân quyền-->
+@using (Html.BeginForm())
+{
+    @Html.Hidden("MaLTV", Model.maloai)
+    if (lstLTVQuyen != null)
+    {
+        //Doi voi nhung loai thanh vien da phan quyen roi
+        for (int j = 0; j < lstQuyen.Count(); j++)
+        {
+
+            int k = 0;//tạo biến k làm biến đếm để duyệt dòng lặp của bảng quyền
+
+            for (int i = 0; i < lstLTVQuyen.Count(); i++)
+            {
+                if (lstQuyen.ElementAt(j).maquyen == lstLTVQuyen.ElementAt(i).maquyen)
+                {
+                    // so sanh neu co quyen trong bang LoaiTV_Quyen thi no se tang k va thoat khoi vong lap
+                    k++;
+                    break;
+                }
+
+            }
+
+            if (k != 0)
+            {
+                //Neu co thi check vao
+                <div class="col-md-4" style="font-size:15pt">
+                    <input class="ckb_click" checked="checked" style="width:20px;height:20px" type="checkbox" name="@Url.Content("[" + j + "].MaQuyen")" value="@lstQuyen.ElementAt(j).maquyen" />
+                    <label>@lstQuyen.ElementAt(j).tenquyen</label>
+                </div>
+            }
+
+            else
+            {
+                //Khong co thi khong check
+                <div class="col-md-4" style="font-size:15pt;">
+                    <input class="ckb_click" style="width:20px;height:20px;" type="checkbox" name="@Url.Content("[" + j + "].MaQuyen")" value="@lstQuyen.ElementAt(j).maquyen">
+                    <label>@lstQuyen.ElementAt(j).tenquyen</label>
+                </div>
+            }
+
+            k = 0;
+        }
+    }
+    else
+    {
+        for (int i = 0; i < lstQuyen.Count(); i++)
+        {
+            <div class="col-md-4" style="font-size:15pt;">
+                <input style="width:20px;height:20px;" type="checkbox" name="@Url.Content("[" + i + "].MaQuyen")" value="@lstQuyen.ElementAt(i).maquyen">
+                <label>@lstQuyen.ElementAt(i).tenquyen</label>
+            </div>
+        }
+
+    }
+    <div class="clearfix"></div>
+    <input type="submit" value="Thực hiện" class="btn btn-success" />
+    <br />
+}
+<!--Viet ham Jquery de duyet lai checkbox da duoc chon-->
+
+
+@section scripts{
+    <script>
+        $(".ckb_click").click(function () {
+            i = 0;
+            $('.ckb_click').each(function () {
+                if ($(this).is(':checked')) {
+                    $(this).attr("name", "[" + i + "].maquyen");
+                    i++;
+                }
+            });
+        });
+    </script>
+}

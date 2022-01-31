@@ -1,0 +1,187 @@
+﻿@model QLBH.Models.SanPham
+<style>
+    .wrapper {
+        width: 100%;
+    }
+
+        .wrapper .carousel {
+            max-width: 1200px;
+            margin: auto;
+            padding: 0 30px;
+        }
+
+    .carousel .card {
+        line-height: 100px;
+        text-align: center;
+        color: #fff;
+        font-size: 90px;
+        font-weight: 600;
+        margin: 20px 0;
+        box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
+        border-radius: 5px;
+    }
+
+    .owl-dots {
+        text-align: center;
+        margin-top: 40px;
+    }
+
+    .owl-dot {
+        height: 15px;
+        width: 45px;
+        border-radius: 25px;
+        cursor: pointer;
+        outline: none;
+        margin: 0 5px;
+        border: 2px solid #0072bc !important;
+        transition: all 0.3s ease;
+    }
+
+        .owl-dot:hover {
+            background-color: #0072 !important;
+            transition: all 0.3s ease;
+        }
+
+        .owl-dot:hover,
+        .owl-dot.active {
+            background: #0072bc !important;
+        }
+
+    .detail {
+        position: absolute;
+        font-size: small;
+        float: right;
+        margin-top: -40%;
+        margin-left: 100px;
+    }
+
+        .detail ul li {
+            text-align: left;
+        }
+
+    .card {
+        transition: all .5s;
+    }
+
+        .card:hover {
+            transform: scale(1.2);
+        }
+</style>
+<div class="row">
+    <div class="col-lg-5 col-md-5" style="margin-top:40px;border:1px solid;text-align:center;padding:0">
+        <img id="big_img" src="@Url.Content(Model.HinhSP)" class="img-responsive" style="width:400px;height:400px"><hr />
+        <div style="display:flex;text-align:center">
+
+            @foreach (var item in ViewBag.lstthunho)
+            {
+                <img id="small_img" src="@Url.Content(item.HinhAnh)" class="img-responsive img-thumbnail" style="width:60px;height:60px;margin-left:10px">
+            }
+        </div>
+    </div>
+    <div class="col-lg-7 col-md-7" style="margin-top:40px">
+        <ul style="line-height:35px;">
+            <li><b>Tên Sản Phẩm</b><span class="label label-danger">@Html.DisplayFor(i => i.TenSP)</span></li>
+            <li>Đơn vị tính :<span class="label label-primary">@Html.DisplayFor(i => i.DonViTinh)</span></li>
+            <li>Đơn giá :<span class="label label-success">@string.Format("{0:#,###}", Model.DonGia) vnđ</span></li>
+            <li>Loại sản phẩm :<span class="label label-info">@Html.DisplayFor(i => i.LoaiSP.TenLoaiSP)</span></li>
+            <li>Mô tả sản phẩm :<span>Mô tả ngắn về sản phẩm</span></li>
+        </ul>
+        <a href="@Url.Action("AddtoCart","GioHang",new { id = Model.MaSP})">
+            <img src="~/Content/img/giohang.png" style="width:40px;height:40px;" />
+        </a>
+        <a class="btn btn-success btn-sm" href="@Url.Action("Index", "Home")">
+            quay lại
+        </a>
+    </div>
+</div>
+<!--San Pham lien quan-->
+<div class="row">
+    <h3>Hàng Liên quan</h3>
+    <hr />
+    <div class="col-sm-12">
+        <div class="wrapper">
+            <div class="carousel owl-carousel">
+                @* Duyệt để lấy ra các sản phẩm có cùng loại *@
+                @foreach (var item in ViewBag.list)
+                {
+                    <div class="card">
+                        <a href="@Url.Action("Details","SanPhams",new { id = item.MaSP})">
+                            <img class="img-thumbnail" src="@Url.Content(item.HinhSP)" style="width:100px;height:100px" />
+                            <div class="detail">
+                                <ul>
+                                    <li>@item.TenSP</li>
+                                    <li style="margin-top:-80px;">@string.Format("{0:#,###} vnd", item.DonGia)</li>
+                                    <li style="margin-top:-80px;">Mo ta</li>
+                                </ul>
+
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <!--cac buoc --->
+    <!--
+       b1:tao div chua khung binh luan
+       b2:lay ma nhung
+       b3:gan ma nhung
+    -->
+</div>
+<!--Mo ta day du ve san pham-->
+<span>Thông tin đầy đủ về sản phẩm</span>
+<ul>
+    <li>Vỏ Kim loại</li>
+    <li>Chống va đập</li>
+    <li>Chống nước</li>
+    <li>Thiết kế nhỏ gọn</li>
+    <li>Tính năng vươt trọi</li>
+</ul>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+@section scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script src="~/zoomsl.js"></script>
+    <!-- XZOOM JQUERY PLUGIN  -->
+
+
+    <script>
+        $('.carousel').owlCarousel({
+            margin: 10,
+            loop: true,
+            autoplay: true,
+            autoplayTimeout: 3000,
+            autoplayHoverPause: true,
+
+            responsive: {
+                0: {
+                    items: 1,
+                    nav: false
+                },
+                600: {
+                    items: 2,
+                    nav: false
+                },
+                1000: {
+                    items: 3,
+                    nav: false
+                }
+            }
+        });
+    </script>
+    <script>
+       
+            $('#small_img').click(function () {
+                //trong truong hop nay con tro this chinh la small_img
+                $('#big_img').attr('src', $(this).attr('src'));
+            });
+
+            $('#big_img').imagezoomsl({
+                zoomrange: [3, 3]
+            });
+      
+    </script>
+
+}

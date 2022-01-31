@@ -1,0 +1,64 @@
+﻿@model IEnumerable<QLBH.Models.HoaDon>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if (ViewBag.success != null)
+{
+    <span id="msgAlert" class="alert alert-success">@ViewBag.success</span>
+}
+<h2>Danh sách hóa đơn</h2>
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Mã Hóa Đơn
+        </th>
+        <th>
+            Ngày lập
+        </th>
+        <th>
+            Ngày giao hàng
+        </th>
+        <th>
+            Địa chỉ
+        </th>
+
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <a href="@Url.Action("ChiTiet","HoaDon",new { id = item.MaHD})">@item.MaHD</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NgayLap)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NgayGiaoHang)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DiaChi)
+            </td>
+
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.MaHD }) |
+                @Html.ActionLink("Details", "Details", new { id = item.MaHD }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.MaHD })
+                <a href="/HoaDon/ExportPdf/@item.MaHD">In hóa đơn</a>
+            </td>
+        </tr>
+    }
+
+</table>
+@section scripts{
+    <script>
+        setTimeout(function () {
+        $('#msgAlert').fadeOut('slow');
+        }, 2000);
+    </script>
+}

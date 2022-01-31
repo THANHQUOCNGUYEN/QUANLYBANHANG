@@ -1,0 +1,321 @@
+﻿<h2>Index</h2>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<div class="row">
+    <div class="col-lg-2">
+        <button id="btnAddNew" class="btn btn-primary">Thêm mới</button>
+    </div>
+    @* cách ra 6 ô còn 4 ô   *@
+    <div class="col-lg-4 col-lg-offset-6 text-right" style="display:flex">
+        <input type="text" class="form-control" placeholder="tim kiem" id="txtSearch" />
+        <button id="btnSearch" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button>
+    </div>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Tên khách Hàng
+            </th>
+            <th>
+                Ngày lập
+            </th>
+            <th>
+                Mô tả
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody id="tbHoaDon">
+    </tbody>
+</table>
+<nav aria-label="Page navigation">
+    <ul class="pagination" id="phantrang">
+    </ul>
+</nav>
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 id="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <form id="frmSavaData">
+                    <input type="hidden" id="idhoadon"> 
+                    <div class="form-group">
+                        <label>Tên khách hàng</label>
+                        <select class="form-control" id="selectkhachhang">
+
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ngày lập</label>
+                        <input type="date" class="form-control" name="ngaylap" id="ngaylap">
+                    </div>
+                    <div class="form-group">
+                        <label>Mô tả</label>
+                        <input type="text" id="mota" class="form-control" name="mota" placeholder="nhập mô tả">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" id="btnSubmit" class="btn btn-primary">Xác nhận</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+@section scripts{
+    <script>
+        var tukhoa = '';
+        var trang = 1;
+
+        $(document).ready(function () {
+            LoadKhachHang();
+            LoadDsHoaDon();
+        });
+
+        $('#btnAddNew').click(function () {
+            $('#modal-title').text("Thêm hóa đơn");
+
+            //set gia tri cho idHoaDon
+            $('#idhoadon').val('');
+
+            $('#mota').val('');
+            //reset form1
+
+            //reset loi trong form
+            form.resetForm();
+           
+            
+            $('#myModal').modal();
+        });
+
+        //Lay danh sach khach hang de do len combobox
+        function LoadKhachHang() {
+            $.ajax({
+                url: '/KhachHang/danhsach',
+                type: 'get',
+                success: function (data) {
+                    if (data.code == 200) {
+                        //trước khi thêm cần phải làm trống nó
+                        $('#selectkhachhang').empty();
+                        $.each(data.lst, function (k, v) {
+                            var op = '<option value="'+v.makh+'">' + v.tenkh + '</option>';
+
+                            $('#selectkhachhang').append(op);
+                        });
+                    }
+                }
+            });
+        }
+        //Sử lý sự kiện search
+        $('#btnSearch').click(function () {
+
+            //lam mới toàn bộ trước khi search trang
+            tukhoa = $('#txtSearch').val();
+            //cho phân trang emty để tiến hành làm lại từ đầu
+            $('#phantrang').empty();
+
+            trang = 1;
+            LoadData(tukhoa, trang);
+        });
+
+        $('#phantrang').on('click', 'li', function (e) {
+            e.preventDefault;
+            trang = $(this).text();
+            LoadData();
+        });
+        //su ly su kien xoa don hang
+
+        $(document).on('click', "button[name='delete']", function () {
+            //lay thang con theo thang cha
+            var idhoadon = $(this).closest('tr').attr('id');
+
+            if (confirm("Ban thực sự muốn xóa mạng này không?")) {
+                //dùng ajax để xóa lớp được chọn
+                $.ajax({
+                    url: '/HoaDon/XoaDonHang',
+                    type: 'get',
+                    data: {
+                        id: idhoadon
+                    },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            alert(data.msg);
+                            $('#myModal').hide();
+                            LoadDsHoaDon();
+                        }
+                        else {
+                            alert(data.msg);
+                        }
+                    }
+                });
+            }
+        });
+        //su ly su kien cho button update
+        $(document).on('click', 'button[name="update"]', function () {
+            //lay id moi dong trong bang table
+            var idhoadon = $(this).closest('tr').attr('id');
+            $('#modal-title').text("Cập nhật hóa đơn");
+
+            $('#idhoadon').val(idhoadon);
+
+            //Lấy id cua khách hàng
+            //lấy dòng theo id và cột theo class khách hàng
+
+            var idkh = $('tr#' + idhoadon + ' td.kh').data('kh');
+
+
+            //set value duoc chon cho select giao vien
+            $('#selectkhachhang').val(idkh);
+            //Lay thoi gian va set cho datetime picker
+            var idngay = $('tr#' + idhoadon + ' td.ngaylap').text();
+            $('#ngaylap').val(idngay);
+
+            $('#myModal').modal();
+        });
+
+        //Su ly su kien validate
+        var form = $('#frmSavaData').validate({
+            rules: {
+                mota: {
+                    required: true,
+                    minlength: 5
+                  
+                 
+                },
+                ngaylap: {
+                    required: true
+                }
+            },
+
+            messages: {
+                mota: {
+                    required: "Bạn phải nhập mô tả",
+                    minlength:"mô tả phải nhiều hơn 5 kí tự"
+                },
+                ngaylap: {
+                    required: "Bạn phải nhập ngày lập",
+                }
+
+            }
+        });
+
+        //Su kien click cua button xac nhan
+        $('#btnSubmit').click(function () {
+            let idkh = $('#selectkhachhang').val();
+            var nglap = $('#ngaylap').val();
+            var mota = $('#mota').val().trim();
+
+            //Rang buoc du lieu kiem tra ngay thang/nam
+            //if (nglap.length == 0) {
+            //    alert('Vui lòng nhập ngày lập hóa đơn !')
+            //    return;
+            //}
+            //if (mota.length == 0) {
+            //    alert('Vui lòng nhập mô tả sản hóa đơn !');
+            //    return;
+            //}
+            if ($('#frmSavaData').valid()) {
+                var idhoadon = $('#idhoadon').val();
+                //Nếu id hóa đơn  = 0 thì thêm hóa đơn
+                if (idhoadon.length == 0) {
+                    $.ajax({
+                        url: '/HoaDon/AddHoaDon',
+                        type: 'post',
+                        data: {
+                            Ma: idkh,
+                            NgLap: nglap,
+                            Mota: mota
+                        },
+                        success: function (data) {
+
+                            if (data.code == 200) {
+                                //Thêm thành công load lại trang
+                                $('#myModal').modal('hide');
+                                LoadDsHoaDon();
+                            } else {
+                                alert(data.msg);
+                            }
+
+                            //resetform
+                        }
+
+                    });
+                }
+                //ngươc lại cập nhật hóa đơn
+                else {
+                    $.ajax({
+                        url: '/HoaDon/CapNhat',
+                        type: 'post',
+                        data: {
+                            ID: idhoadon,
+                            Ma: idkh,
+                            NgLap: nglap,
+                            Mota: mota
+                        },
+                        success: function (data) {
+                            if (data.code == 200) {
+                                $('#myModal').modal('hide');
+
+                                alert(data.msg);
+                                LoadDsHoaDon();
+                            }
+                            else {
+                                alert("Cap nhat that bai !");
+                            }
+                        }
+
+                    });
+                }
+            }
+        });
+
+        function LoadDsHoaDon() {
+            $.ajax({
+                url: '/HoaDon/LoadHoaDon',
+                type: 'get',
+
+                success: function (data) {
+                    if (data.code == 200) {
+                        ////load danh sach hoa don
+                        $('#tbHoaDon').empty();
+                        $.each(data.dshoadon, function (k, value) {
+                            let tr = '<tr id="' + value.mahd + '">';
+
+                            //Lưu giá trị mã khách hàng vào cột để tiến hành import vào csdl
+                            tr += '<td class="kh" data-kh="' + value.makh + '">' + value.tenkh + '</td>';
+                            tr += '<td class="ngaylap">' + value.nglap + '</td>';
+                            tr += '<td class="mota">' + value.mota + '</td>';
+                            tr += '<td style="text-align:right;">';
+                            tr += '<button class="btn btn-primary" name="view"><i class="fas fa-info-circle"></i></button>&nbsp;';
+                            tr += '<button class="btn btn-secondary" name="update"><i class="fas fa-edit"></i></button>&nbsp;';
+                            tr += '<button class="btn btn-danger" name="delete"><i class="fas fa-trash-alt"></i></button>';
+                            tr += '</td>'
+                            tr += '<td><a href="@Url.Action("Index","Default")">Link</a></td>';
+                            tr += '</tr>';
+
+                            $('#tbHoaDon').append(tr);
+                        });
+
+
+                        //PHÂN TRANG KHI THÀNH CÔNG
+
+                    }
+                    else {
+                        alert(data.msg);
+                    }
+                }
+
+            });
+
+
+        }
+    </script>
+    }

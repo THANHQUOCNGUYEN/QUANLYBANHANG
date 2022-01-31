@@ -1,0 +1,42 @@
+﻿@{ 
+    Layout = null;
+}
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<link href="~/xzoom.css" rel="stylesheet" />
+<style>
+    .xzoom-preview{
+        width:400px;
+        height:400px;
+    }
+</style>
+<script src="~/xzoom.js"></script>
+<script>
+    $(function () {
+        $(".xzoom, .xzoom-gallery").xzoom({
+            zoomWidth: 60,
+            zoomHeight: 60,
+            tint: "#333",
+            Xoffset:15
+        });
+    });
+    
+</script>
+<div class="container">
+    <div class="xzoom-container">
+        <img src="~/img/01.jpg" class="xzoom" xoriginal="~/img/01.jpg" xpreview="~/img/01.jpg" style="width:400px;height:400px" >
+        <div class="xzoom-thumbs">
+            <a href="~/img/01.jpg">
+                <img class="xzoom-gallery" src="~/img/01.jpg" xpreview="~/img/01.jpg" style="width:50px;height:50px" />
+            </a>
+            <a href="~/img/02.jpg">
+                <img class="xzoom-gallery" src="~/img/02.jpg" style="width:50px;height:50px" />
+            </a>
+            <a href="~/img/03.jpg">
+                <img class="xzoom-gallery" src="~/img/03.jpg" style="width:50px;height:50px" />
+            </a>
+            <a href="~/img/04.jpg">
+                <img class="xzoom-gallery" src="~/img/04.jpg" style="width:50px;height:50px" />
+            </a>
+        </div>
+    </div>
+</div>

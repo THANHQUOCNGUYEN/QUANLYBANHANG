@@ -1,0 +1,126 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/Admin_Layout.cshtml";
+}
+@section scripts{
+    @*<script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>*@
+    @*<script>
+        $(document).ready(function () {
+            $.getJSON("/Admin/tongkesoluongsanphambanduoc", function (data) {
+                var Names = []
+                var totals = []
+                for (var i = 0; i < data.length; i++) {
+                    Names.push(data[i].name);
+                    totals.push(data[i].count);
+                }
+                Highcharts.chart('container', {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Tổng doanh thu của mỗi sản phẩm bán có'
+                    },
+                    subtitle: {
+                        text: 'Source: WorldClimate.com'
+                    },
+                    xAxis: {
+                        categories: Names
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Money (VNĐ)'
+                        }
+                    },
+                    plotOptions: {
+                        line: {
+                            dataLabels: {
+                                enabled: true
+                            },
+                            enableMouseTracking: false
+                        }
+                    },
+                    series: [{
+                        name: 'Sản Phẩm',
+                        data: totals
+                    },]
+                });
+            });
+
+        });
+
+    </script>*@
+    <script>
+        $('#fromdate').datepicker();
+        $('#todate').datepicker();
+    </script>
+
+}
+<h2 style="text-align:center">Đây là trang chủ của Admin</h2>
+<style>
+    .row {
+        padding: 10px;
+    }
+</style>
+<div class="row">
+    <div class="col-lg-3 col-sm-6 col-md-4 bg-danger">
+        <b>PageView: @ViewBag.PageView</b>
+    </div>
+    <div class="col-lg-3 col-sm-6 col-md-4 bg-primary">
+
+        <b>People Onine:  @ViewBag.SonguoiDangOnline</b>
+    </div>
+    <div class="col-lg-3 col-sm-6 col-md-4 bg-success">
+        <b><i style="font-size:50px;color:red" class="fas fa-users"></i>@ViewBag.SoluongThanhVien</b>
+    </div>
+    <div class="col-lg-3 col-sm-6 col-md-4 bg-warning">
+        <b>Tổng doanh thu:@string.Format("{0:#,### vnđ}", @ViewBag.TongDoanhThu)</b>
+    </div>
+
+</div>
+
+<!--<figure class="highcharts-figure">
+    <div id="container">-->
+        <!--chart-->
+    <!--</div>
+</figure>-->
+<div class="row" ng-app="appChart" ng-controller="revenueStasticController">
+    <div>
+        <span>Thống kê doanh thu</span>
+        <table style="width:100%">
+            <tr>
+                <td>Từ ngày</td>
+                <td>Đến ngày</td>
+            </tr>
+            <tr>
+                <td><input class="form-control" id="fromdate" type="text"/></td>
+                <td><input class="form-control" id="todate" type="text"/></td>
+            </tr>
+            <tr>
+                <td colspan="2"><button ng-click="staticChart()">Click</button></td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-lg-6">
+        <canvas id="bar" class="chart chart-line" chart-data="data" chart-labels="labels">
+        </canvas>
+    </div>
+    <div class="col-lg-6">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Tên sản phẩm</th>
+                    <th>Doanh thu</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in datachart">
+                    <td>{{item.name}}</td>
+                    <td>{{item.count | number}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,79 @@
+﻿@model QLBH.Models.SanPham
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/js-ui/ShowImagePreview.js"></script>
+<link href="~/Content/css/mycss.css" rel="stylesheet" />
+<div style="margin-left:20%">
+    @using (Html.BeginForm("Create", "SanPhams", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            <h2>Tạo mới sản phẩm</h2>
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.Label("Tên sản phẩm", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-8">
+                    @Html.TextBoxFor(model => model.TenSP, new { @class = "form-control", style = "width:100%" })
+                    @Html.ValidationMessageFor(model => model.TenSP, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Đơn vị tính", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.DonViTinh, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.DonViTinh, "", new { @class = "text-danger" })
+
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Đơn giá", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.DonGia, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.DonGia, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Loại sản phẩm", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("MaLoaiSP", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.MaLoaiSP, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.HinhSP, "Hình sản phẩm", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <img src="" style="width:200px;height:200px" id="hinh">
+
+                    <input type="file" name="HINH" onchange="ShowImagePreview(this, document.getElementById('hinh'))">
+                    @ViewBag.error
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+            </div>
+            <div>
+                @Html.ActionLink("Trang chủ", "Index")
+            </div>
+        </div>
+
+
+    }
+
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/js-ui/ShowImagePreview.js"></script>
+}

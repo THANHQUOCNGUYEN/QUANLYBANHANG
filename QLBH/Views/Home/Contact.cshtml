@@ -1,0 +1,73 @@
+﻿@model QLBH.Models.KhachHang
+@{
+    ViewBag.Title = "Contact";
+}
+
+<style>
+    #mapcanvas {
+        height: 600px;
+    }
+</style>
+@section scripts{
+
+    <script>
+        function initMap() {
+            const uluru = { lat: -25.363, lng: 131.044 };
+            const map = new google.maps.Map(document.getElementById('mapcanvas'), {
+                zoom: 4,
+                center: uluru,
+            });
+            //chuoi dia chi lấy trên db xuống
+            const contentString = "227 Nguyễn Văn Cừ,Phường 4,Quận 5,TP HCM";
+            const infowindow = new google.maps.InfoWindow({
+                content: contentString,
+            });
+            const marker = new google.maps.Marker({
+                position: uluru,
+                map,
+                title: "Địa chỉ",
+            });
+            marker.addListener("click", () => {
+                infowindow.open(map, marker);
+            });
+
+
+        }
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBUCTnAQ2562pjD9cZNsAgi5ExQ9mgWY7I&callback=initMap&libraries=&v=weekly"
+            async></script>
+}
+<h2>Liên Hệ</h2>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6">
+            <h2>Thông tin liên hệ</h2>
+            <table>
+                <tr>
+                    <td>Tên công ty</td>
+                    <td>227 Nguyễn Văn Cừ,P.4,Q.5,TP HCM</td>
+                </tr>
+                <tr>
+                    <td>Địa chỉ công ty</td>
+                    <td>@Model.DiaChi</td>
+                </tr>
+                <tr>
+                    <td>Điện thoại</td>
+                    <td>@Model.DienThoai</td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td>@Model.Email</td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-lg-6">
+            <h2>Bản đồ</h2>
+            <div class="map" id="mapcanvas">
+
+            </div>
+        </div>
+    </div>
+
+</div>

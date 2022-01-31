@@ -1,0 +1,19 @@
+﻿@if (Session["User"] != null)
+{
+    <strong>Xin chào !  @Session["User"].ToString() </strong>
+    <span style="text-align:right"><a href="@Url.Action("Logout","NguoiDung")">Logout</a></span>
+}
+<ul>
+    <li><a href="@Url.Action("Index","QuanLySanPham")">Quản lý sản phẩm</a></li>
+    <li><a href="@Url.Action("Index","QuanLyHoaDon")">Quản lý hóa đơn</a></li>
+    <li><a href="@Url.Action("Index","QuanLyKhachHang")">Quản lý khách hàng</a></li>
+    <li><a href="@Url.Action("Index","QuanLyNhanVien")">Quản lý nhân viên</a></li>
+    <li><a href="@Url.Action("Index","QuanLyPhanQuyen")">Quản lý phân quyền</a></li>
+</ul>
+
+@using (Html.BeginForm())
+{
+    <input type="checkbox" value="true" name="txtcheck" /><p>ASP.NET</p>
+    <input type="submit" value="submit"/>
+}
+<span style="color:red">@ViewBag.check</span>

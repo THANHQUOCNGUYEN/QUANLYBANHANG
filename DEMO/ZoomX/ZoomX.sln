@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31129.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZoomX", "ZoomX\ZoomX.csproj", "{72C27F71-2BF2-4543-984F-B35D434FB4D9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebForm", "..\WebForm\WebForm.csproj", "{E334BA96-498C-480A-97E2-B4E1883393B5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{72C27F71-2BF2-4543-984F-B35D434FB4D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72C27F71-2BF2-4543-984F-B35D434FB4D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72C27F71-2BF2-4543-984F-B35D434FB4D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72C27F71-2BF2-4543-984F-B35D434FB4D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E334BA96-498C-480A-97E2-B4E1883393B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E334BA96-498C-480A-97E2-B4E1883393B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E334BA96-498C-480A-97E2-B4E1883393B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E334BA96-498C-480A-97E2-B4E1883393B5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {71CE1FD8-38A5-4E01-BEF3-5C1F3B9D4689}
+	EndGlobalSection
+EndGlobal

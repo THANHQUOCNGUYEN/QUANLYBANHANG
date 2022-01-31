@@ -1,0 +1,115 @@
+﻿@model QLBH.Models.User
+@using CaptchaMvc.HtmlHelpers
+@{
+    ViewBag.Title = "DangKi";
+    Layout = null;
+}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+<style>
+    .register-form {
+        border: 1px solid #ccc;
+        width: 500px;
+        border-radius: 7px;
+        padding: 40px;
+        background-color: #eee;
+    }
+
+    table {
+        width: 100%;
+    }
+</style>
+
+<div class="container" style="padding:0">
+    <div class="row text-center" style="margin-top:100px;">
+        <div class="col-lg-2">
+
+        </div>
+        <div class="col-lg-8 bg-danger">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="register-form">
+
+                    <table>
+                        <tr>
+                            <td colspan="2" style="text-align:center;background-color:#007bff">
+                                <h4>Đăng kí thành viên</h4>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                UserName:
+                            </th>
+                            <td>
+                                @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+
+                            </td>
+                        </tr>
+                        <tr style="text-align:center">
+                            <td colspan="2" style="color:red">
+                                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                                @ViewBag.username
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Email :
+                            </th>
+                            <td>
+                                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="text-align:center;color:red">
+                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                                @ViewBag.email
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Mật khẩu :
+                            </th>
+                            <td>
+                                @Html.PasswordFor(model => model.Password, new { @class = "form-control", style = "width:100%" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="color:red;text-align:center">
+                                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+
+                            </td>
+                        </tr>
+                       
+                        <tr>
+                            <td colspan="2" style="text-align:center">
+                                @Html.Captcha("Refresh CapCha", "Nhập captcha", 5)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="text-align:center;color:red"> <b>@ViewBag.er</b></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="text-align:center">
+                                <input type="submit" value="Đăng kí" class="btn btn-primary btn-sm" />
+                                <a href="@Url.Action("DangNhap","NguoiDung")" class="btn btn-primary btn-sm">Đăng nhập</a>
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+
+            }
+
+        </div>
+        <div class="col-lg-2">
+
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.min.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.1/jquery.validate.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>

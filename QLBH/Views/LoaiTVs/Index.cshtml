@@ -1,0 +1,35 @@
+﻿@model IEnumerable<QLBH.Models.LoaiTV>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/Admin_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.tenloai)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.tenloai)
+        </td>
+        <td>
+          
+
+            <a href="@Url.Action("PhanQuyen","LoaiTVs",new { id = item.MaLoaiTV})">PhanQuyen</a>
+
+        </td>
+    </tr>
+}
+
+</table>

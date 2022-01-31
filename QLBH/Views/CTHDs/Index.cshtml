@@ -1,0 +1,57 @@
+﻿@{ 
+    Layout = "~/Views/Shared/Admin_Layout.cshtml";
+}
+    @foreach (var m in ViewBag.Main)
+    {
+        //Chi tiết hóa đơn chỉ cần lưu tên khách hàng và Mã hóa đơn thôi
+        <h3>Số hóa đơn :@m.mahd</h3>
+        <h3>Tên khách hàng :@m.tenkh</h3>
+    }
+
+    <table class="table table-striped">
+        <tr>
+            <th>Số TT</th>
+            <th>Tên SP</th>
+            <th>Đơn vị tính</th>
+            <th>Số lượng</th>
+            <th>Đơn giá</th>
+            <th>Thành tiền</th>
+            <th></th>
+            <th></th>
+        </tr>
+
+        @{
+            double tongtien = 0;
+            int i = 0;
+
+            foreach (var item in ViewBag.Sub)
+            {
+                i++;
+                tongtien += item.soluong * item.dongia;
+
+                <tr>
+                    <td>@i</td>
+                    <td>@item.tensp</td>
+                    <td>@item.donvitinh</td>
+                    <td>@item.soluong</td>
+                    <td>@string.Format("{0:#,###} vnđ", item.dongia)</td>
+                    <td>@string.Format("{0:#,###} vnđ", item.dongia * item.soluong)</td>
+                    <td><a href="@Url.Action("Delete","CTHDs",new {id = item.mahd,masp = item.masp })">Xóa</a></td>
+                    <td><a href="#">Sửa</a>
+                    <td>
+                </tr>
+            }
+        }
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>Tổng tiền</th>
+            <th>@string.Format("{0:0,0} vnđ", tongtien)</th>
+        </tr>
+
+    </table>
+

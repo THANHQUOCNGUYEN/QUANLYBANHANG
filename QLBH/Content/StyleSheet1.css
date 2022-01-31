@@ -1,0 +1,29 @@
+﻿.navbar-inverse {
+    background-color: #141514;
+}
+.register-form {
+    position: absolute;
+    top: 30%;
+    left: 30%;
+    padding: 10px 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+
+    background-image:url('img/c.jpg');
+}
+
+    
+.field-validation-error {
+    color: red;
+}
+
+table{
+    width:500px;
+}
+.top-bar{
+    height:30px;
+    background-color:blue;
+}
+.bg{
+    width:500px;
+}

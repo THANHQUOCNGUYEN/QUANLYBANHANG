@@ -1,0 +1,57 @@
+﻿@model PagedList.IPagedList<QLBH.Models.SanPham>
+@using PagedList.Mvc
+@{
+    ViewBag.Title = "Home Page";
+}
+@if (ViewBag.ThanhCong != null)
+{
+    <div id="dangki" class="alert alert-success">
+        @ViewBag.ThanhCong
+    </div>
+}
+
+<link href="~/Css/zoommages.css" rel="stylesheet" />
+<section class="section-product">
+    <div class="container-fluid">
+        <div class="row">
+            <ul>
+                @foreach (var item in Model)
+                {
+                    <li>
+                        <div class="col-sm-6 col-md-4 col-lg-3 product-item">
+                            <div class="thumbnail">
+                                <a href="#">
+                                    <img src="@Url.Content(item.HinhSP)" />
+                                </a>
+                                <div class="view-detail-layer">
+                                    <a href="@Url.Action("Details","SanPhams",new { id = item.MaSP})" title="viewDetail">Xem chi tiết</a>
+                                </div>
+                                <div class="caption text-center">
+                                    <div class="proName"><b>@item.TenSP</b></div>
+                                    <span class="badge badge-primary">@string.Format("{0:#,###}", item.DonGia) vnđ </span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                }
+
+            </ul>
+
+        </div>
+    </div>
+</section>
+
+<div class="row text-center">
+    @Html.PagedListPager(Model, pageIndex => Url.Action("Index", "Home",
+        new { pageIndex, maloaisp = ViewBag.loaisp, txttim = ViewBag.tim }))
+    Trang @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
+</div>
+
+@section scripts{
+    <script>
+        setTimeout(function () {
+            $('#dangki').fadeOut('slow');
+        }, 2000);
+
+    </script>
+}

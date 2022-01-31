@@ -1,0 +1,424 @@
+﻿@{ 
+    Layout = null;
+}
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<div class="container">
+    <div class="row">
+        <div class="col-lg-2">
+            <button id="btnAddNew" class="btn btn-primary">Thêm mới</button>
+        </div>
+        @* cách ra 6 ô còn 4 ô   *@
+        <div class="col-lg-4 col-lg-offset-6 text-right" style="display:flex">
+            <input type="text" class="form-control" placeholder="tim kiem" id="txtSearch" />
+            <button id="btnSearch" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button>
+        </div>
+    </div>
+    <nav aria-label="Page navigation">
+        <ul class="pagination" id="phantrang">
+        </ul>
+    </nav>
+    <table class="table">
+        <thead style="background-color:forestgreen;color:white;">
+            <tr>
+                <th>
+                    Tên giáo viên
+                </th>
+                <th>
+                    Ngày sinh
+                </th>
+                <th>
+                    Giới Tính
+                </th>
+                <th>
+                    Môn học
+                </th>
+
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody id="tbGiaoVien">
+        </tbody>
+
+    </table>
+
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 id="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <input name="txtgiaovien" type="hidden" id="idgiaovien">
+                        <div class="form-group">
+                            <label>Tên giáo viên</label>
+                            <input class="form-control" id="tengv" />
+                        </div>
+                        <div class="form-group">
+                            <label>giới tính</label>
+                            <input type="radio" checked name="gioitinh" value="true" />Nam
+                            <input type="radio" name="gioitinh" value="false" />Nữ
+                        </div>
+                        <div class="form-group">
+                            <label>Ngày Sinh</label>
+                            <input type="date" id="ngsinh" class="form-control" />
+
+                        </div>
+
+                        <div class="form-group">
+                            <label>Môn học</label>
+                            <select class="form-control" id="selectmonhoc">
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btnSubmit" class="btn btn-primary">Xác nhận</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <!--Thêm thư viện jquery của boostrap tương ứng với phiên bản boostrap-->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    @*@section scripts{*@
+    <script>
+        var trang = 1;
+        var tukhoa = '';
+        $(document).ready(function () {
+            LayDanhSachMon();
+            LayDanhSachGV()
+        });
+
+        $('#btnAddNew').click(function () {
+
+            $('#idgiaovien').val('');
+            FalseReadOnline();
+
+            $('#modal-title').text('Thêm mới giáo viên');
+            $('#btnSubmit').show();
+            reset();
+            $('#myModal').modal();
+
+
+        });
+
+        //readonlea cac textbox
+        function ReadOnline() {
+            $('#tengv').prop('readonly', true);
+
+            $("input[name='gioitinh']").prop('disabled', true)
+
+            $('#ngsinh').prop('readonly', true);
+
+
+            $('#selectmonhoc').prop('disabled', true);
+        }
+
+        //mo cac texbox
+        function FalseReadOnline() {
+            $('#tengv').prop('readonly', false);
+
+            $("input[name='gioitinh']").prop('disabled', false)
+
+            $('#ngsinh').prop('readonly', false);
+
+
+            $('#selectmonhoc').prop('disabled', false);
+        }
+
+        //reserForm()
+
+        function reset() {
+            $('#tengv').val('');
+            $('#ngsinh').val('');
+
+        }
+
+        //button chi tiet
+      
+
+        $(document).on('click', 'button[name="view"]', function () {
+            //this la button ,lay thang cha theo id
+            var idgiaovien = $(this).closest('tr').attr('id');
+            $('#modal-title').text("Chi tiết giáo viên");
+
+            $('#idgiaovien').val(idgiaovien);
+
+
+            //lay gia tri cua gioi tinh theo dong
+
+            var gioitinh = $('tr#' + idgiaovien + ' td.gt').data('gt');
+            $("input[name='gioitinh'][value='" + gioitinh + "']").prop('checked', true)
+
+            //lay gia tri ngay sinh theo dong
+
+            var idngay = $('tr#' + idgiaovien + ' td.ngsinh').text();
+            $('#ngsinh').val(idngay);
+
+            //lay gia tri cho ten khach hang
+            var tengv = $('tr#' + idgiaovien + ' td.tengv').text();
+            $('#tengv').val(tengv);
+
+
+            var mamh = $('tr#' + idgiaovien + ' td.mh').data('mh');
+            $('#selectmonhoc').val(mamh);
+
+            //reaonly cho các texbox
+            ReadOnline();
+
+            //An xac nhan
+            $('#btnSubmit').hide();
+
+            $('#myModal').modal();
+
+        });
+
+        //button update
+
+        $(document).on('click', 'button[name="update"]', function () {
+
+            //lay id moi dong trong bang table
+            var idgiaovien = $(this).closest('tr').attr('id');
+            $('#modal-title').text("Cập nhật giáo viên");
+
+
+            $('#idgiaovien').val(idgiaovien);
+
+            //gan mamh
+            var mamh = $('tr#' + idgiaovien + ' td.mh').data('mh');
+            $('#selectmonhoc').val(mamh);
+
+            //lay gia tri cua gioi tinh theo dong
+            var gioitinh = $('tr#' + idgiaovien + ' td.gt').data('gt');
+
+            $("input[name='gioitinh'][value='" + gioitinh + "']").prop('checked', true)
+
+            //lay gia tri ngay sinh theo dong
+            var idngay = $('tr#' + idgiaovien + ' td.ngsinh').text();
+            $('#ngsinh').val(idngay);
+
+            //lay gia tri cho ten khach hang
+            var tengv = $('tr#' + idgiaovien + ' td.tengv').text();
+            $('#tengv').val(tengv);
+
+            //gan gia tri len moal
+          /*  FalseReadOnline();*/
+            $('#btnSubmit').show();
+            FalseReadOnline()
+            $('#myModal').modal();
+        });
+
+        //Xu ly button submit
+        $('#btnSubmit').click(function () {
+
+            var tengv = $('#tengv').val();
+            var ngsinh = $('#ngsinh').val();
+
+            //Lấy giá trị của radio đươc check
+            var gioitinh = $("input:radio[name=gioitinh]:checked").val();
+
+            var mamon = $('#selectmonhoc').val();
+
+            if (tengv.length == 0 || ngsinh.length == 0) {
+                alert('vui lòng nhập đầy đủ thông tin giáo viên !');
+                return;
+            }
+
+
+            var idgiaovien = $('#idgiaovien').val();
+
+            if (idgiaovien.length == 0) {
+                //Thêm mới giáo viên
+                $.ajax({
+                    url: '/GiaoVien/ThemGV',
+                    type: 'post',
+                    data: {
+                        tengv: tengv,
+                        gioitinh: gioitinh,
+                        ngsinh: ngsinh,
+                        gioitinh: gioitinh,
+                        mamon: mamon
+                    },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            alert(data.msg);
+                            $('#myModal').modal('hide');
+
+                            trang = 1;
+                            LayDanhSachGV(trang, tukhoa);
+                        }
+                        else {
+                            alert(data.msg);
+                        }
+                    }
+                });
+            }
+
+            else {
+                //update giao vien
+
+                $.ajax({
+                    url: '/GiaoVien/CapNhatGiaoVien',
+                    type: 'post',
+                    data: {
+                        magv: idgiaovien,
+                        tengv: tengv,
+                        gioitinh: gioitinh,
+                        ngsinh: ngsinh,
+                        mamon: mamon
+                    },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            alert(data.msg);
+                            $('#myModal').modal('hide');
+
+
+                            trang = 1;
+                            LayDanhSachGV(trang, tukhoa);
+
+                        }
+                        else {
+                            alert(data.msg);
+                        }
+                    }
+                });
+            }
+        });
+
+
+        $(document).on('click', "button[name='delete']", function () {
+            //lay id cua dong tuong ung trong bang table
+            var idgiaovien = $(this).closest('tr').attr('id');
+
+            if (confirm("Bạn thực sự muốn xóa mạng này không?")) {
+                //dùng ajax để xóa lớp được chọn
+                $.ajax({
+                    url: '/GiaoVien/XoaGiaoVien',
+                    type: 'get',
+                    data: {
+                        magv: idgiaovien
+                    },
+                    success: function (data) {
+
+                        if (data.code == 200) {
+                            alert(data.msg);
+
+                            //luôn lấy lại trang  = 1 sau mỗi lần nhấn vào 1 button và load lại dữ liệu
+                            $('#myModal').hide();
+                            trang = 1;
+
+                            LayDanhSachGV(trang, tukhoa);
+                        }
+                        else {
+                            alert(data.msg);
+                        }
+                    }
+                });
+            }
+        });
+
+        $('#btnSearch').click(function () {
+
+            //lam mới toàn bộ trước khi search trang
+            tukhoa = $('#txtSearch').val();
+            $('#phantrang').empty();
+            trang = 1;
+            LayDanhSachGV(trang, tukhoa);
+
+        });
+        $('#phantrang').on('click', 'li', function (e) {
+            e.preventDefault;
+            trang = $(this).text();
+            LayDanhSachGV(trang,tukhoa);
+        });
+
+        function LayDanhSachGV() {
+            $.ajax({
+                url: '/GiaoVien/LayDanhSachGV',
+                type: 'get',
+                data: {
+                    trang: trang,
+                    tukhoa: tukhoa
+                },
+                success: function (data) {
+                    $('#tbGiaoVien').empty();
+                    $.each(data.list, function (k, value) {
+                            let tr = '<tr id="' + value.magv + '">';
+
+                            //Lưu giá trị mã khách hàng vào cột để tiến hành import vào csdl
+                            tr += '<td class="tengv">' + value.tengv + '</td>';
+                            tr += '<td class="ngsinh">' + value.ngsinh + '</td>';
+
+                        //Xet neu gioi tinh la true thi la nam nguoc lai la nu
+                             if (value.gioitinh == true) {
+                                 tr += '<td class="gt" data-gt="' + value.gioitinh + '">Nam</td>';
+                              }
+                            else {
+                                tr += '<td class="gt" data-gt="' + value.gioitinh + '">Nữ</td>';
+                            }
+
+                            tr += '<td class="mh" data-mh="' + value.mamh + '">' + value.tenmh + '</td>';
+
+                            tr += '<td style="text-align:right;">';
+                            tr += '<button class="btn btn-primary" name="view"><i class="fas fa-info-circle"></i><a href="@Url.Action("Index","LopHoc")"></a></button>&nbsp;';
+                            tr += '<button class="btn btn-secondary" name="update"><i class="fas fa-edit"></i></button>&nbsp;';
+                            tr += '<button class="btn btn-danger" name="delete"><i class="fas fa-trash-alt"></i></button>';
+                            tr += '</td>'
+                            tr += '</tr>';
+
+                            $('#tbGiaoVien').append(tr);
+                        });
+
+
+                    //Phân trang dữ liệu
+                    if (data.sotrang > 1) {
+                        $('#phantrang').empty();
+                        for (i = 1; i <= data.sotrang; i++) {
+                            /*let li = '<li><a href="#">' + i + '</a></li>';*/
+                            let li = '<li class="page-item" id = "' + i + '"><a class="page-link" href = "#">' + i + '</a></li>';
+                            $('#phantrang').append(li);
+                        }
+
+                        //lấy ra trang có id tương ứng và tiến hàng active trang đó
+
+                        let li = $('#phantrang li#' + trang);
+
+                        //boostrap3
+                        $(li).addClass('active');
+
+                        //boostrap4
+                        $(li).addClass('page-item active');
+
+                    }
+                }
+            });
+        }
+        //lay danh sach mon hoc
+        function LayDanhSachMon() {
+            $.ajax({
+                url: '/MonHoc/danhsach',
+                type: 'get',
+
+                success: function (data) {
+                    $('#selectmonhoc').empty();
+                    $.each(data, function (k, v) {
+                        var op = '<option value="' + v.mamh + '">' + v.tenmh + '</option>';
+
+                        $('#selectmonhoc').append(op);
+                    });
+                }
+            });
+        }
+    </script>
+    @*}*@
+
+</div>

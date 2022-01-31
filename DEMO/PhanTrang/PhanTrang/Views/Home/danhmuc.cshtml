@@ -1,0 +1,20 @@
+﻿@model IEnumerable<PhanTrang.Models.LoaiSP>
+<style>
+    .thoiem{
+        list-style-type:none;
+        display:flex;
+        margin:20px;
+    }
+
+    .thoiem li{
+        display:inline-block;
+        padding:10px;
+    }
+</style>
+<ul class="thoiem">
+    @foreach (var item in Model)
+    {
+        <li><a href="@Url.Action("Index",new {maloai = item.MaLoaiSP })">@item.TenLoaiSP</a></li>
+
+    }
+</ul>

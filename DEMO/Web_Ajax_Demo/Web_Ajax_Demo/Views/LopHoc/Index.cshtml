@@ -1,0 +1,343 @@
+﻿<h2>Index</h2>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<div class="row">
+    <div class="col-lg-2">
+        <button id="btnAddNew" class="btn btn-primary">Thêm mới</button>
+    </div>
+    @* cách ra 6 ô còn 4 ô   *@
+    <div class="col-lg-4 col-lg-offset-6 text-right" style="display:flex">
+        <input type="text" class="form-control" placeholder="tim kiem" id="txtSearch" />
+        <button id="btnSearch" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button>
+    </div>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Tên lớp
+            </th>
+            <th>
+                Mô tả
+            </th>
+            <th>
+               
+            </th>
+        </tr>
+    </thead>
+
+    <tbody id="tbLop">
+    </tbody>
+</table>
+<nav aria-label="Page navigation">
+    <ul class="pagination" id="phantrang">
+    </ul>
+</nav>
+@section scripts{
+    @*//nhung lên trên cùng của load*@
+    <script>
+        var tukhoa = '';
+        var trang = 1;
+        //neu chua lam gi thu mac dinh tu khoa la rong
+       /* Su ly su kien load du lieu*/
+        $(document).ready(function () {
+            LoadData(tukhoa,trang);
+        });
+
+        $('#btnSearch').click(function () {
+
+            //lam mới toàn bộ trước khi search trang
+            tukhoa = $('#txtSearch').val();
+            $('#phantrang').empty();
+            trang = 1;
+            LoadData(tukhoa, trang);
+
+        });
+
+        //su ly su kien click cua phan trang
+        $('#phantrang').on('click', 'li', function (e) {
+            e.preventDefault;
+            trang = $(this).text();
+            LoadData(tukhoa, trang);
+        });
+
+        //Su kien button click
+
+        //Su ly su kien cho button delete
+        $(document).on('click', "button[name='delete']", function () {
+            //lay id cua dong tuong ung trong bang table
+            var idLop = $(this).closest('tr').attr('id');
+
+            if (confirm("Ban thực sự muốn xóa mạng này không?")) {
+                //dùng ajax để xóa lớp được chọn
+                $.ajax({
+                    url: '/LopHoc/XoaLop',
+                    type: 'get',
+                    data: {
+                        id: idLop
+                    },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            alert(data.msg);
+
+                            //luôn lấy lại trang  = 1 sau mỗi lần nhấn vào 1 button và load lại dữ liệu
+                            trang = 1;
+                            $('#myModal').hide();
+                            LoadData(tukhoa,trang);
+                        }
+                        else {
+                            alert(data.msg);
+                        }
+                    }
+                });
+            }
+        });
+        //Su ly su kien cho button update
+        $(document).on('click', "button[name='update']", function () {
+            //lay id moi dong trong bang table
+            //this la button ,lay thang cha theo id
+            var idLop = $(this).closest('tr').attr('id');
+
+            $('#idLop').val(idLop);
+
+            //su dung ajax de xem chi tiet
+            $.ajax({
+                url: "/LopHoc/XemChiTiet",
+                type: 'get',
+                //tham so truyen vao
+                data: {
+                    id: idLop
+                },
+                success: function (data) {
+                    if (data.code == 200) {
+                        //Lay thong tin thanh cong !;
+                        //Set value cho textbox
+                        $('#tenlop').val(data.l.tenlop);
+                        $('#mota').val(data.l.mota);
+
+                        //Khi xem khong cho chinh sua gia tri
+                        $('#tenlop').prop('readonly', false);
+                        $('#mota').prop('readonly', false);
+                        //an button submit di
+                        $('#btnSubmit').show();
+
+
+                        $('#myModal').modal();
+                    }
+                    else {
+                        alert(data.msg);
+                    }
+                }
+            });
+
+           
+        });
+
+        //Su ly su kien cho button Detail
+        $(document).on('click', 'button[name="view"]', function () {
+            //this la button ,lay thang cha theo id
+            var idLop = $(this).closest('tr').attr('id');   
+
+            //su dung ajax de xem chi tiet
+            $.ajax({
+                url: "/LopHoc/XemChiTiet",
+                type: 'get',
+                //tham so truyen vao
+                data: {
+                    id: idLop
+                },
+                success: function (data) {
+                    if (data.code == 200) {
+                        //Lay thong tin thanh cong !;
+                        //Set value cho textbox
+                        $('#tenlop').val(data.l.tenlop);
+                        $('#mota').val(data.l.mota);
+
+                        //Khi xem khong cho chinh sua gia tri
+                        $('#tenlop').prop('readonly', true);
+                        $('#mota').prop('readonly', true);
+                        //an button submit di
+                        $('#btnSubmit').hide();
+
+
+                        $('#myModal').modal();
+                    }
+                    else {
+                        alert(data.msg);
+                    }
+                }
+            });
+
+        });
+
+        //Su ly su kien cho button Add new
+        $('#btnAddNew').click(function () {
+            resetForm();
+            //gán giá trị cho idLop
+            $('#idLop').val('');
+            $('#tenlop').prop('readonly', false);//mở các texbox
+            $('#mota').prop('readonly', false);
+
+            //Hiển thị nút thêm mới
+            $('#btnSubmit').show();
+
+            $('#myModal').modal();
+        });
+
+        //Su Ly buttonSubmit
+        $('#btnSubmit').click(function () {
+            var tenlop = $('#tenlop').val().trim();
+            var mota = $('#mota').val().trim();
+
+            //rang buoc du lieu
+            if (tenlop.length == 0 || mota.length == 0) {
+                alert("Nhập đầy đủ dữ liệu !");
+
+                return;
+            }
+            var idLop = $('#idLop').val();
+            //Nếu idLop có dộ dài  = 0 thì thêm mới đối tượng !
+            if (idLop.length == 0) {
+                $.ajax({
+                    url: "/LopHoc/AddLop",
+                    type: "post",
+                    data: {
+                        tenlop: tenlop,
+                        mota: mota
+                    },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            //thêm thành công
+                            alert(data.msg);
+
+                            trang = 1;
+                            LoadData(tukhoa, trang);
+
+                            resetForm();
+
+                            //khi them moi cho trong trường id hidden
+                        } else {
+
+                            //Thêm thất bại
+                            alert(data.msg);
+                        }
+                    }
+
+                });
+            }
+
+            //Cập nhật đối tượng
+            else {
+                //cap nhat lop da ton tai
+                $.ajax({
+                    url: '/LopHoc/CapNhat',
+                    type: 'post',
+                    data: {
+                        id: idLop,
+                        tenlop1: tenlop,
+                        mota1: mota
+
+                    },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            //Cập nhật thành công
+                            alert(data.msg);
+                            $('#myModal').modal('hide');//dong model
+
+                            trang = 1;
+                           
+                            //load lai danh sach lop sau khi cap nhat
+                            LoadData(tukhoa, trang);
+                        }
+                        else {
+                            alert(data.msg);
+                        }
+                    }
+                });
+            }
+
+        });
+
+        //reset form
+        function resetForm() {
+
+            $('#tenlop').val('');
+            $('#mota').val('');
+        }
+        //LoadData
+        function LoadData(tukhoa,trang) {
+            $.ajax({
+                url: '/LopHoc/DSLop',
+                type: 'get',
+                data: {
+                    TuKhoa: tukhoa,
+                    trang: trang
+                },
+                //khong co tham so nen khong dung thanh phan data
+                success: function (data) {
+                    /*console.log(data);*/
+
+                    if (data.code == 200) {
+                        $('#tbLop').empty();
+                        $.each(data.dsLop, function (key, value) {
+                            let tr = '<tr id="' + value.malop + '">';
+                            tr += '<td class="col-lg-5">' + value.tenlop + '</td>';
+                            tr += '<td class="col-lg-5">' + value.mota + '</td>';
+                            tr += '<td class="col-lg-2" text right">';
+                            tr += '<button class="btn btn-primary" name="view"><i class="fas fa-info-circle"></i></button>&nbsp;';
+                            tr += '<button class="btn btn-secondary" name="update"><i class="fas fa-edit"></i></button>&nbsp;';
+                            tr += '<button class="btn btn-danger" name="delete"><i class="fas fa-trash-alt"></i></button>';
+                            tr += '</td>'
+                            tr += '</tr>';
+
+                            $('#tbLop').append(tr);
+                        });
+                        //phan trang
+
+                        if (data.soTrang > 1) {
+                            $('#phantrang').empty();
+                            for (i = 1; i <= data.soTrang; i++) {
+                                let li = '<li><a href="#">' + i + '</a></li>';
+
+                                $('#phantrang').append(li);
+                            }
+                        }
+
+                    }
+                }
+            });
+        }
+    </script>
+
+}
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Thêm mới hoặc cập nhật lớp học</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input type="hidden" id="idLop">
+                    <div class="form-group">
+                        <label>Tên lớp</label>
+                        <input type="text" class="form-control" id="tenlop" placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                        <label>Mô tả</label>
+                        <input type="text" class="form-control" id="mota" placeholder="Meta">
+                    </div>
+                    <i class="fas fa-users"></i>    
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" id="btnSubmit" class="btn btn-primary">Xác nhận</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+
+    </div>
+</div>

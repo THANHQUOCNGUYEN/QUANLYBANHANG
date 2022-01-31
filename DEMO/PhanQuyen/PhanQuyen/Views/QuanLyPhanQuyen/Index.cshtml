@@ -1,0 +1,272 @@
+﻿<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+@model IEnumerable<PhanQuyen.Models.UserGroup>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2 style="text-align:center">Quản lý Phân Quyền Loại Thành Viên</h2>
+@if(ViewBag.ThanhCong != null)
+{
+    <span id="thanhcong" class="alert alert-success">
+        @ViewBag.ThanhCong
+        
+    </span>
+
+}
+<p>
+    <button id="btnAddNew" class="btn btn-primary">Thêm mới</button>
+</p>
+<table class="table table-bordered">
+    <thead>
+        <tr style="background-color:forestgreen;color:white">
+            <th>
+                Mã loại TV
+            </th>
+            <th>
+                Tên loại TV
+            </th>
+                
+            <th style="text-align:right">
+                Phân Quyền
+            </th>
+        </tr>
+    </thead>
+    <tbody id="tbloaitv">
+        <!--do du lieu vao cho nay-->
+    </tbody>
+</table>
+<!--dùng ajax đê tạo mới 1 loại thanh viên-->
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 id="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input type="hidden" id="idloaitv">
+                    <div class="form-group">
+                        <label>Mã Loại TV</label>
+                        <input class="form-control" id="maloai" />
+                    </div>
+                    <div class="form-group">
+                        <label>Tên Loại TV</label>
+                        <input class="form-control" id="tenloai" />
+                    </div>
+                    
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" id="btnSubmit" class="btn btn-primary">Xác nhận</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+@section scripts{
+    <script>
+        setTimeout(function () {
+            $('#thanhcong').fadeOut('slow');
+        }, 2000);
+
+        $(document).ready(function () {
+            LayDanhSachLoaiTV();
+        });    
+
+        function LayDanhSachLoaiTV() {
+            $.ajax({
+                url: '/QuanLyPhanQuyen/LayDanhSach',
+                type: 'get',
+
+                success: function (data) {
+                    $('#tbloaitv').empty();
+                    $.each(data, function (k, value) {
+                        let tr = '<tr id="' + value.maloai + '">';
+
+                        loaitv = value.maloai
+                        //Lưu giá trị mã khách hàng vào cột để tiến hành import vào csdl
+                        tr += '<td class="maloai">' + value.maloai + '</td>';
+                        //Xet neu gioi tinh la true thi la nam nguoc lai la nu
+                        tr += '<td class="tenloai"><b>' + value.tenloai + '</b></td>';
+
+                        tr += '<td style="text-align:right;">';
+                        tr += '<button class="btn btn-primary" name="view"><i class="fas fa-info-circle"></i></a></button>&nbsp;';
+                        tr += '<button class="btn btn-secondary" name="update"><i class="fas fa-edit"></i></button>&nbsp;';
+                        tr += '<button class="btn btn-danger" name="delete"><i class="fas fa-trash-alt"></i></button>&nbsp;';
+                        tr += '<a href="@Url.Action("PhanQuyen","QuanLyPhanQuyen")?id=' + value.maloai + '">Phân Quyền</a>';
+
+                        tr += '</td>'
+                        tr += '</tr>';
+
+                         $('#tbloaitv').append(tr);
+                        });
+
+
+                    //Phân trang dữ liệu
+
+                }
+            });
+        }
+
+        $('#btnAddNew').click(function () {
+
+            $('#modal-title').text("Thêm mới loại thành viên")
+            $('#idloaitv').val('');
+            reserForm();
+            $('#btnSubmit').show();
+            $('#myModal').modal();
+        });
+        $(document).on('click', "button[name='delete']", function () {
+            //lay id cua dong tuong ung trong bang table
+            var idloaitv = $(this).closest('tr').attr('id');
+
+            if (confirm("Bạn thực sự muốn xóa mạng này không?")) {
+                //dùng ajax để xóa lớp được chọn
+                $.ajax({
+                    url: '/QuanLyPhanQuyen/Xoa',
+                    type: 'get',
+                    data: {
+                        id: idloaitv
+                    },
+                    success: function (data) {
+
+                        if (data.code == 200) {
+                            alert(data.msg);
+
+                            //luôn lấy lại trang  = 1 sau mỗi lần nhấn vào 1 button và load lại dữ liệu
+                            $('#myModal').hide();
+                            //trang = 1;
+                            LayDanhSachLoaiTV();
+                            //LayDanhSachGV(trang, tukhoa);
+                        }
+                        else {
+                            alert(data.msg);
+                        }
+                    }
+                });
+            }
+        });
+        function reserForm() {
+            $('#maloai').val('');
+            $('#tenloai').val('');
+        }
+      
+        $(document).on('click', 'button[name="update"]', function () {
+
+            //lay id moi dong trong bang table
+            var idloaitv = $(this).closest('tr').attr('id');
+
+            $('#modal-title').text("Cập nhật loaị thành viên");
+
+            $('#idloaitv').val(idloaitv);
+
+            //gan maloaitv
+            var maloai = $('tr#' + idloaitv + ' td.maloai').text();
+            $('#maloai').val(maloai);
+
+            //lay gia tri tenloaithanhvien
+            var tenloai = $('tr#' + idloaitv + ' td.tenloai').text();
+            $('#tenloai').val(tenloai);
+
+            $('#btnSubmit').show();
+
+            $('#myModal').modal();
+        });
+        //button view
+        $(document).on('click', 'button[name="view"]', function () {
+
+            //lay id moi dong trong bang table
+            var idloaitv = $(this).closest('tr').attr('id');
+
+            $('#modal-title').text("Thông tin nhóm người dùng");
+
+            $('#idloaitv').val(idloaitv);
+
+            //gan maloaitv
+            var maloai = $('tr#' + idloaitv + ' td.maloai').text();
+            $('#maloai').val(maloai);
+
+            //lay gia tri tenloaithanhvien
+            var tenloai = $('tr#' + idloaitv + ' td.tenloai').text();
+            $('#tenloai').val(tenloai);
+
+            $('#btnSubmit').hide();
+
+            $('#myModal').modal();
+        });
+
+        //su ly button submit
+        $('#btnSubmit').click(function () {
+
+            var maloai = $('#maloai').val();
+            var tenloai = $('#tenloai').val();
+
+            //Lấy giá trị của radio đươc check
+            if (maloai.length == 0 || tenloai.length == 0) {
+                alert('vui lòng nhập đầy đủ thông tin !');
+                return;
+            }
+
+
+            var idloaitv = $('#idloaitv').val();
+
+            if (idloaitv.length == 0) {
+                //Thêm mới nhom nguoi dung
+                $.ajax({
+                    url: '/QuanLyPhanQuyen/ThemNhom',
+                    type: 'post',
+                    data: {
+                        maloai: maloai,
+                        tenloai: tenloai
+
+                    },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            alert(data.msg);
+                            $('#myModal').modal('hide');
+
+                            LayDanhSachLoaiTV();
+                            //trang Url 1;
+                            //LayDanhSachGV(trang, tukhoa);
+                        }
+                        else {
+                            alert(data.msg);
+                        }
+                    }
+                });
+            }
+
+            else {
+                //update nhom nguoi dung
+
+                $.ajax({
+                    url: '/QuanLyPhanQuyen/CapNhat',
+                    type: 'post',
+                    data: {
+                        id: idloaitv,
+                        tenloai: tenloai,
+                       
+                    },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            alert(data.msg);
+                            $('#myModal').modal('hide');
+                            
+                            LayDanhSachLoaiTV()
+
+                        }
+                        else {
+                            alert(data.msg);
+                        }
+                    }
+                });
+            }
+        });
+
+    </script>
+}

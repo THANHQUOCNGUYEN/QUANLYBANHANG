@@ -1,0 +1,390 @@
+﻿<h2>Quản lý danh sách khách hàng</h2>
+<h2>Index</h2>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<div class="row">
+    <div class="col-lg-2">
+        <button id="btnAddNew" class="btn btn-primary">Thêm mới</button>
+    </div>
+    @* cách ra 6 ô còn 4 ô   *@
+    <div class="col-lg-4 col-lg-offset-6 text-right" style="display:flex">
+        <input type="text" class="form-control" placeholder="tim kiem" id="txtSearch" />
+        <button id="btnSearch" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button>
+    </div>
+</div>
+<nav aria-label="Page navigation">
+    <ul class="pagination" id="phantrang">
+    </ul>
+</nav>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Tên khách hàng
+            </th>
+            <th>
+                Ngày sinh
+            </th>
+            <th>
+                Giới Tính
+            </th>
+            <th>
+                Địa chỉ
+            </th>
+            <th>
+                Điện thoại
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody id="tbKhachHang">
+    </tbody>
+</table>
+<nav aria-label="Page navigation">
+    <ul class="pagination" id="phantrang">
+    </ul>
+</nav>
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 id="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input type="hidden" id="idkhachhang">
+                    <div class="form-group">
+                        <label>Tên khách hàng</label>
+                        <input class="form-control" id="tenkh" />
+                    </div>
+                    <div class="form-group" style="text-align:center">
+                        <label>Phái</label>
+                        <input type="radio" checked name="gioitinh" value="true" />Nam
+                        <input type="radio" name="gioitinh" value="false">Nữ
+                    </div>
+                    <div class="form-group">
+                        <label>Ngày Sinh</label>
+                        <input type="date" id="ngsinh" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Địa chỉ</label>
+                        <input type="text" id="diachi" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Điện thoại</label>
+                        <input type="number" id="dienthoai" class="form-control" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" id="btnSubmit" class="btn btn-primary">Xác nhận</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@*//Phần phân trang*@
+@section scripts{
+    <script>
+        var trang = 1;
+        var tukhoa = '';
+        $(document).ready(function () {
+            Loaddskh(trang, tukhoa);
+        });
+        //Reset form
+        function ResetForm() {
+            $('#tenkh').val('');
+            $('#ngsinh').val('');
+            $('#dienthoai').val('');
+            $('#diachi').val('');
+            $("input[name='gioitinh'][value='true']").prop('checked', true);
+            $('#ngsinh').val('');
+        }
+        //Tìm kiếm
+        $('#btnSearch').click(function () {
+
+            //lam mới toàn bộ trước khi search trang
+            tukhoa = $('#txtSearch').val();
+            $('#phantrang').empty();
+            trang = 1;
+            Loaddskh(trang, tukhoa);
+
+        });
+        //Phan trang
+        $('#phantrang').on('click', 'li', function (e) {
+            e.preventDefault;
+            trang = $(this).text();
+            Loaddskh(trang, tukhoa);
+        });
+
+        //Thêm mới khách hàng
+        $('#btnAddNew').click(function () {
+            $('#modal-title').text('Thêm mới khách hàng');
+            $('#idkhachhang').val('');
+            ResetForm();
+            FalseReadOnline();
+            $('#btnSubmit').show();
+            $('#myModal').modal();
+        });
+        //Cập nhật khách hàng
+        $(document).on('click', 'button[name="update"]', function () {
+            //lay id moi dong trong bang table
+            var idkhachhang = $(this).closest('tr').attr('id');
+            $('#modal-title').text("Cập nhật khách hàng");
+
+            $('#idkhachhang').val(idkhachhang);
+
+
+            //lay gia tri cua gioi tinh theo dong
+            var gioitinh = $('tr#' + idkhachhang + ' td.gioitinh').text();
+            $("input[name='gioitinh'][value='" + gioitinh + "']").prop('checked', true)
+
+            //lay gia tri ngay sinh theo dong
+
+            var idngay = $('tr#' + idkhachhang + ' td.ngsinh').text();
+            $('#ngsinh').val(idngay);
+
+            //lay gia tri cho ten khach hang
+            var tenkh = $('tr#' + idkhachhang + ' td.tenkh').text();
+            $('#tenkh').val(tenkh);
+
+            //Lay gia tri dia chi
+            var diachi = $('tr#' + idkhachhang + ' td.diachi').text();
+            $('#diachi').val(diachi);
+
+            //Lay gia tri dien thoai
+            var dienthoai = $('tr#' + idkhachhang + ' td.dienthoai').text();
+            $('#dienthoai').val(dienthoai);
+
+            //gan gia tri len moal
+            FalseReadOnline();
+            $('#btnSubmit').show();
+            $('#myModal').modal();
+        });
+        //Xóa khách hàng tương tự
+        $(document).on('click', "button[name='delete']", function () {
+            //lay id cua dong tuong ung trong bang table
+            var idKhachHang = $(this).closest('tr').attr('id');
+
+            if (confirm("Bạn thực sự muốn xóa mạng này không?")) {
+                //dùng ajax để xóa lớp được chọn
+                $.ajax({
+                    url: '/KhachHang/XoaKhachHang',
+                    type: 'get',
+                    data: {
+                        makh: idKhachHang
+                    },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            alert(data.msg);
+
+                            //luôn lấy lại trang  = 1 sau mỗi lần nhấn vào 1 button và load lại dữ liệu
+                            $('#myModal').hide();
+                            trang = 1;
+                            Loaddskh(trang,tukhoa);
+                        }
+                        else {
+                            alert(data.msg);
+                        }
+                    }
+                });
+            }
+        });
+
+        $(document).on('click', 'button[name="view"]', function () {
+            //this la button ,lay thang cha theo id
+            var idkhachhang = $(this).closest('tr').attr('id');
+            $('#modal-title').text("Cập nhật khách hàng");
+
+            $('#idkhachhang').val(idkhachhang);
+
+
+            //lay gia tri cua gioi tinh theo dong
+            var gioitinh = $('tr#' + idkhachhang + ' td.gioitinh').text();
+            $("input[name='gioitinh'][value='" + gioitinh + "']").prop('checked', true)
+
+            //lay gia tri ngay sinh theo dong
+
+            var idngay = $('tr#' + idkhachhang + ' td.ngsinh').text();
+            $('#ngsinh').val(idngay);
+
+            //lay gia tri cho ten khach hang
+            var tenkh = $('tr#' + idkhachhang + ' td.tenkh').text();
+            $('#tenkh').val(tenkh);
+
+            //Lay gia tri dia chi
+            var diachi = $('tr#' + idkhachhang + ' td.diachi').text();
+            $('#diachi').val(diachi);
+
+            //Lay gia tri dien thoai
+            var dienthoai = $('tr#' + idkhachhang + ' td.dienthoai').text();
+            $('#dienthoai').val(dienthoai);
+
+            //gan gia tri len moal
+
+            //reaonly cho các texbox
+            ReadOnline();
+
+            //An xac nhan
+            $('#btnSubmit').hide();
+
+            $('#myModal').modal();
+
+        });
+        //readonly cac textbox
+        function ReadOnline() {
+            $('#tenkh').prop('readonly', true);
+            $('#gioitinh').prop('readonly', true);
+            $('#ngsinh').prop('readonly', true);
+            $('#diachi').prop('readonly', true);
+            $('#dienthoai').prop('readonly', true);
+        }
+        function FalseReadOnline() {
+            $('#tenkh').prop('readonly', false);
+            $('#gioitinh').prop('readonly', false);
+            $('#ngsinh').prop('readonly', false);
+            $('#diachi').prop('readonly', false);
+            $('#dienthoai').prop('readonly', false);
+        }
+
+        //viết hàm sử lý cho button submit
+        $('#btnSubmit').click(function () {
+
+            var tenkh = $('#tenkh').val().trim();//bỏ đi kí tự khoảng trắng
+
+            //lấy gUrlDActionatarlrlrlá trị của radio button giới tính
+            var gioitinh = $("input:radio[name=gioitinh]:checked").val();
+            var ngsinh = $('#ngsinh').val();
+            var diachi = $('#diachi').val().trim();
+            var dienthoai = $('#dienthoai').val().trim();
+
+
+
+
+            if (tenkh.length == 0 || ngsinh.length == 0 || diachi.length == 0 || dienthoai.length == 0) {
+                alert('vui long nhap nhap day du thong tin khach hang !');
+                return;
+            }
+
+            var idkhachhang = $('#idkhachhang').val();
+            //them moi khach hang
+            if (idkhachhang.length == 0) {
+                $.ajax({
+                    url: '/KhachHang/ThemKhachHang',
+                    type: 'post',
+                    data: {
+                        tenkh: tenkh,
+                        gioitinh: gioitinh,
+                        ngsinh: ngsinh,
+                        diachi: diachi,
+                        dienthoai: dienthoai
+                    },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            alert(data.msg);
+                            $('#myModal').modal('hide');
+
+                            trang = 1;
+                            Loaddskh(trang,tukhoa);
+                            ResetForm();
+                        }
+                        else {
+                            alert(data.msg);
+                        }
+                    }
+                });
+            }
+            //cap nhat khach hang
+            else {
+                $.ajax({
+                    url: '/KhachHang/CapNhatKhachHang',
+                    type: 'post',
+                    data: {
+                        makh: idkhachhang,
+                        tenkh: tenkh,
+                        gioitinh: gioitinh,
+                        ngsinh: ngsinh,
+                        diachi: diachi,
+                        dienthoai: dienthoai
+                    },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            alert(data.msg);
+                            $('#myModal').modal('hide');
+
+                            //Lay lai trang  = 1 va tu khoa = "",
+                            trang = 1;
+                            Loaddskh(trang, tukhoa);
+                            ResetForm();
+                        }
+                        else {
+                            alert(data.msg);
+                        }
+                    }
+                });
+            }
+
+        });
+
+
+        function Loaddskh(trang,tukhoa) {
+            $.ajax({
+
+                url: '/KhachHang/dsKhachHang',
+                type: 'get',
+                data: {
+                    trang: trang,
+                    tukhoa: tukhoa
+                },
+                success: function (data) {
+                    if (data.code == 200) {
+                        //Tien hanh them vao tbkhachhang
+
+                        $('#tbKhachHang').empty();
+                        $.each(data.dskh, function (k, value) {
+                            let tr = '<tr id="' + value.makh + '">';
+
+                            //Lưu giá trị mã khách hàng vào cột để tiến hành import vào csdl
+                            tr += '<td class=tenkh>' + value.tenkh + '</td>';
+                            tr += '<td class="ngsinh">' + value.ngsinh + '</td>';
+                            //if (value.gioitinh == true) {
+                            //    tr += '<td class="gioitinh">' + 'Nam' + '</td>';
+                            //}
+                            //else {
+                                
+                            //}
+                            tr += '<td class="gioitinh">' + value.gioitinh + '</td>';
+                            tr += '<td class="diachi">' + value.diachi + '</td>';
+                            tr += '<td class="dienthoai">' + value.dienthoai + '</td>';
+                            tr += '<td style="text-align:right;">';
+                            //tr += '<a class="btn btn-primary" href="@Url.Action("Index","LopHoc")"><i class="fas fa-info-circle"></i></a>';
+                            tr += '<button class="btn btn-primary" name="view"><i class="fas fa-info-circle"></i><a href="@Url.Action("Index","LopHoc")"></a></button>&nbsp;';
+                            tr += '<button class="btn btn-secondary" name="update"><i class="fas fa-edit"></i></button>&nbsp;';
+                            tr += '<button class="btn btn-danger" name="delete"><i class="fas fa-trash-alt"></i></button>';
+                            tr += '</td>'
+                            tr += '</tr>';
+
+                            $('#tbKhachHang').append(tr);
+                        });
+
+                        //Phân trang
+                        if (data.soTrang > 1) {
+                            $('#phantrang').empty();
+                            for (i = 1; i <= data.soTrang; i++) {
+                                let li = '<li><a href="#">' + i + '</a></li>';
+
+                                $('#phantrang').append(li);
+                            }
+                        }
+                    }
+                }
+            });
+        };
+    </script>
+}

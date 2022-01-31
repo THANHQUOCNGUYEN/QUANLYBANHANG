@@ -1,0 +1,38 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Login</title>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <!--import cac thu vien-->
+</head>
+<body>
+    <div>
+        @using (Html.BeginForm())
+        {
+            <table>
+                <tr>
+                    <td>User Name:</td>
+                    <td><input type="text" name="txtUserName" /></td>
+                </tr>
+                <tr>
+                    <td>Password:</td>
+                    <td><input type="text" name="txtpassword" /></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="color:red" class="text-center">@ViewBag.error</td>
+                </tr>
+                <tr>
+                    <td colspan="2"><input class="btn btn-primary" type="submit" value="DANG NHAP" /></td>
+                </tr>
+            </table>
+        }
+    </div>
+</body>
+</html>
